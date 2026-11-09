@@ -21,9 +21,9 @@ ComfyUI 自定义节点，内嵌 Qwen3.8-27B-VL 本地大模型，按 MiniMax H3
 - **全中文界面**：模式、时长(秒)、输出语言、最大输出字数、模型
 - **不抢显存**：Qwen 用子进程跑，跑完自动退出，不跟生成模型抢 GPU
 
-## 配套项目
+## 相关项目
 
-- [MiniMaxH3Director-Qwen-Prompt](https://github.com/PigHoush/MiniMaxH3Director-Qwen-Prompt) — 导演台，集成了本节点的 Qwen 优化能力
+[MiniMaxH3Director-Qwen-Prompt](https://github.com/PigHoush/MiniMaxH3Director-Qwen-Prompt) 导演台的 Qwen 提示词优化功能基于本项目源码开发。
 
 ## 迭代历程
 
@@ -57,8 +57,3 @@ ComfyUI 自定义节点，内嵌 Qwen3.8-27B-VL 本地大模型，按 MiniMax H3
 ## 更新日志
 
 详见 [CHANGELOG.md](CHANGELOG.md)
-
-## 致谢
-
-- [MiniMax H3 Director](https://github.com/AIMixer/ComfyUI_MiniMaxH3_Director) — 导演台
-- Qwen3.8 / llama.cpp — 推理引擎
