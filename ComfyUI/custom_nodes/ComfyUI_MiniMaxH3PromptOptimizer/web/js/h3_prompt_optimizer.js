@@ -41,6 +41,8 @@ const MODE_CFG = {
   HYBRID:  { imgs: 9, vids: 3, auds: 3 },
   V2VA:    { imgs: 0, vids: 1, auds: 0 },
   RV2VA:   { imgs: 9, vids: 1, auds: 3 },
+  T2I:     { imgs: 0, vids: 0, auds: 0 },
+  IMG_EDIT:{ imgs: 9, vids: 0, auds: 0 },
 };
 
 app.registerExtension({

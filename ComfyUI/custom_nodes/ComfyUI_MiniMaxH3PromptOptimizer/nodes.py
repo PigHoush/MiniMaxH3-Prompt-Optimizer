@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ComfyUI 独立节点：MiniMax H3 提示词优化器
 
-薄封装：真正的推理由引擎脚本用 D:\\H3PromptOptimizer\\python 起子进程完成。
+薄封装：真正的推理由引擎脚本用项目自带 python 起子进程完成。
 参考素材通过节点自带 DOM 面板选择（9图+3视频+3音频），不接 LoadImage。
 """
 from __future__ import annotations
@@ -15,12 +15,13 @@ from pathlib import Path
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
 
-ENGINE_DIR = Path(r"D:\H3PromptOptimizer\engine")
-ENGINE_PY = Path(r"D:\H3PromptOptimizer\python\python.exe")
+ENGINE_DIR = Path(__file__).resolve().parents[3] / "engine"
+ENGINE_PY = Path(__file__).resolve().parents[3] / "python" / "python.exe"
 ENGINE_SCRIPT = ENGINE_DIR / "h3_prompt_optimizer.py"
 ENGINE_CONFIG = ENGINE_DIR / "config.json"
 
-TASKS = ["T2VA", "I2VA", "L2VA", "FL2VA", "REF2VA", "HYBRID", "V2VA", "RV2VA"]
+TASKS = ["T2VA", "I2VA", "L2VA", "FL2VA", "REF2VA", "HYBRID", "V2VA", "RV2VA",
+         "T2I", "IMG_EDIT"]
 CREATE_NO_WINDOW = 0x08000000 if os.name == "nt" else 0
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp"}
@@ -222,7 +223,7 @@ class MiniMaxH3PromptOptimizer:
         print(f"[H3提示词优化] task={task} duration={duration:g}s images={img_idx} videos={vid_idx} audios={aud_idx}")
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=900,
                               creationflags=CREATE_NO_WINDOW, encoding="utf-8",
-                              errors="replace")
+                              errors="replace", cwd=str(ENGINE_DIR))
         if proc.returncode != 0 or not out_file.is_file():
             tail = (proc.stderr or proc.stdout or "").strip().splitlines()[-12:]
             raise RuntimeError("提示词优化失败：\n" + "\n".join(tail))
@@ -303,7 +304,8 @@ async def _h3_optimize_handler(request):
         media_file.write_text(json.dumps(spec, ensure_ascii=False), encoding="utf-8")
         cmd += ["--media-file", str(media_file)]
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=900,
-                          creationflags=CREATE_NO_WINDOW, encoding="utf-8", errors="replace")
+                          creationflags=CREATE_NO_WINDOW, encoding="utf-8", errors="replace",
+                          cwd=str(ENGINE_DIR))
     if proc.returncode != 0 or not out_file.is_file():
         tail = (proc.stderr or proc.stdout or "").strip().splitlines()[-15:]
         return web.json_response({"error": "engine failed", "detail": "\n".join(tail)}, status=500)

@@ -29,11 +29,16 @@ PKG_DIR = VENDOR / "Goohai-MiniMax-H3_Integration"
 TARGET = PKG_DIR / "prompt_optimizer.py"
 CONFIG_PATH = ROOT / "config.json"
 
-TASKS = ("T2VA", "I2VA", "L2VA", "FL2VA", "REF2VA", "HYBRID")
+TASKS = ("T2VA", "I2VA", "L2VA", "FL2VA", "REF2VA", "HYBRID",
+         "T2I", "IMG_EDIT")
 TASK_ALIASES = {
     "T2V": "T2VA", "I2V": "I2VA", "L2V": "L2VA", "FL2V": "FL2VA",
     "R2V": "REF2VA", "REF2V": "REF2VA",
+    "T2IMG": "T2I", "TEXT2IMAGE": "T2I", "T2IMAGE": "T2I",
+    "EDIT": "IMG_EDIT", "IMGEDIT": "IMG_EDIT", "I2I": "IMG_EDIT",
+    "IMAGE_EDIT": "IMG_EDIT", "EDIT_IMAGE": "IMG_EDIT",
 }
+IMAGE_TASKS = {"T2I", "IMG_EDIT"}
 
 DEFAULT_CONFIG = {
     "model_dirs": [str(ROOT.parent / "models_e"), str(ROOT.parent / "models")],
@@ -195,7 +200,29 @@ def load_optimizer(cfg: dict):
     spec.loader.exec_module(mod)
     dirs = [Path(p) for p in cfg.get("model_dirs") or []]
     _bind_junction_safe_scan(mod, dirs)
+    _patch_image_system_prompt(mod)
     return mod
+
+
+def _patch_image_system_prompt(mod) -> None:
+    """图片任务（T2I / IMG_EDIT）绕过 vendor 的视频六段式 system prompt，
+    改用 MiniMax-H3-Image 官方提示词写作规则。"""
+    from image_prompts import build_t2i_system_prompt, build_edit_system_prompt
+
+    original = mod._system_prompt
+
+    def _patched(task: str, duration: float, labels: list[str],
+                 output_language: str = "English",
+                 context: dict | None = None,
+                 user_prompt: str = "") -> str:
+        t = str(task or "").upper().strip()
+        if t == "T2I":
+            return build_t2i_system_prompt(output_language, user_prompt)
+        if t == "IMG_EDIT":
+            return build_edit_system_prompt(labels or [], output_language, user_prompt)
+        return original(task, duration, labels, output_language, context, user_prompt)
+
+    mod._system_prompt = _patched
 
 
 # ---------------------------------------------------------------- 模型

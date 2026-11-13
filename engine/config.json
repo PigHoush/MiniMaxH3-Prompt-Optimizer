@@ -1,7 +1,7 @@
 {
-  "package_dir": "D:\\H3PromptOptimizer\\engine\\vendor",
+  "package_dir": "./vendor",
   "model_dirs": [
-    "D:\\H3PromptOptimizer\\ComfyUI\\models"
+    "../ComfyUI/models"
   ],
   "local_model": "Q38-27B-G-UD/Qwen3.8-27B-UD-Q3_K_XL.gguf",
   "local_mmproj": "Q38-27B-G-UD/mmproj-Qwen3.8-27B-F16.gguf",
@@ -10,5 +10,5 @@
   "output_language": "中文",
   "max_tokens": 4096,
   "image_max_edge": 1280,
-  "out_dir": "D:\\H3PromptOptimizer\\engine\\输出"
+  "out_dir": "./输出"
 }
