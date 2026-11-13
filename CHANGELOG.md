@@ -128,6 +128,16 @@ D:\H3PromptOptimizer\
 
 ---
 
+## v2.1.1 — 2026-11-14
+
+### 路径可移植化
+
+- `nodes.py` 不再硬编码 `D:\H3PromptOptimizer\`，改用 `__file__` 相对路径定位 engine 和 python，整个项目拷到任何盘都能跑
+- `config.json` 的 `package_dir`、`model_dirs`、`out_dir` 全部改为相对路径
+- 子进程调用加 `cwd=ENGINE_DIR`，确保相对路径在任何工作目录下都能正确解析
+
+---
+
 ## v2.2.0 — 2026-11-13
 
 ### 新增：ComfyUI_H3ImageRenderer 出图节点
