@@ -12,12 +12,12 @@ import re
 
 # ---------------------------------------------------------------- 公共
 def _lang_instruction(language: str) -> str:
-    """H3-Image 官方建议用英文写画面描述；中文输出也允许但描述性段落用英文更稳。"""
+    """按用户选择输出语言。H3-Image 英文效果更好，但用户选中文就写中文。"""
     if str(language).lower().startswith("zh") or language == "中文":
         return (
-            "Write the optimized prompt in English, because MiniMax-H3-Image was trained on English "
-            "image descriptions. Text that literally appears inside the image keeps its own language "
-            "(Chinese stays Chinese, English stays English). Do not write the description itself in Chinese."
+            "Write the optimized prompt in Simplified Chinese. "
+            "Text that literally appears inside the image keeps its own language "
+            "(Chinese stays Chinese, English stays English)."
         )
     return "Write the optimized prompt in English."
 
